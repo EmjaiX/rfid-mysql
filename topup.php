@@ -106,7 +106,7 @@
 	<br>
 	<div class="row-container">
 		<div id="show_merchant_data">
-			<form>
+			<form id="show_merchant_data_form">
 				<table width="452" border="1" bordercolor="#10a0c5" align="center" cellpadding="0" cellspacing="1" bgcolor="#000" style="padding: 2px">
 					<tr>
 						<td height="40" align="center" bgcolor="#10a0c5">
@@ -117,7 +117,7 @@
 					</tr>
 					<tr>
 						<td bgcolor="#f9f9f9">
-							<table width="452" border="0" align="center" cellpadding="5" cellspacing="0">
+							<table id="merchant_table" width="452" border="0" align="center" cellpadding="5" cellspacing="0">
 								<tr>
 									<td width="113" align="left" class="lf">ID</td>
 									<td style="font-weight:bold">:</td>
@@ -151,7 +151,7 @@
 		</div>
 
 		<div id="show_customer_data">
-			<form>
+			<form id="show_customer_data_form">
 				<table width="452" border="1" bordercolor="#10a0c5" align="center" cellpadding="0" cellspacing="1" bgcolor="#000" style="padding: 2px">
 					<tr>
 						<td height="40" align="center" bgcolor="#10a0c5">
@@ -162,7 +162,7 @@
 					</tr>
 					<tr>
 						<td bgcolor="#f9f9f9">
-							<table width="452" border="0" align="center" cellpadding="5" cellspacing="0">
+							<table id="customer_table" width="452" border="0" align="center" cellpadding="5" cellspacing="0">
 								<tr>
 									<td width="113" align="left" class="lf">ID</td>
 									<td style="font-weight:bold">:</td>
@@ -197,9 +197,9 @@
 	</div>
 	<div class="row-container controls">
 		<button>Top-UP</button>
-		<button>Clear Merchant</button>
-		<button>Clear Customer</button>
-		<button>Clear All</button>
+		<button onclick="return clearMerchant()">Clear Merchant</button>
+		<button onclick="return clearCustomer()">Clear Customer</button>
+		<button onclick="return clearAll()">Clear All</button>
 	</div>
 	<script>
 		/*
@@ -254,11 +254,60 @@
 				xmlhttp.send();
 			}
 		}
-
+		function showCustomer(){
+			let id = "39EAB06D";
+			let link = "readtag.php?id=" + id ;
+			fetch(link).then((res)=>res.text()).then((data)=>{
+				document.querySelector("#customer_table").innerHTML = data;
+			})
+		}
+		function showMerchant(){
+			let id = "39EAB06D";
+			let link = "readtag.php?id=" + id ;
+			fetch(link).then((res)=>res.text()).then((data)=>{
+				document.querySelector("#merchant_table").innerHTML = data;
+			})
+		}
 		var blink = document.getElementById('blink');
 		setInterval(function() {
 			blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
 		}, 750);
+
+		function clearCustomer(){
+			document.querySelector("#customer_table").innerHTML = defaultTable;
+		}
+		function clearMerchant(){
+			document.querySelector("#merchant_table").innerHTML = defaultTable;
+		}
+		function clearAll(){
+			clearCustomer();
+			clearMerchant();
+		}
+		var defaultTable = `<tr>
+									<td width="113" align="left" class="lf">ID</td>
+									<td style="font-weight:bold">:</td>
+									<td align="left">--------</td>
+								</tr>
+								<tr bgcolor="#f2f2f2">
+									<td align="left" class="lf">Name</td>
+									<td style="font-weight:bold">:</td>
+									<td align="left">--------</td>
+								</tr>
+								<tr>
+									<td align="left" class="lf">Gender</td>
+									<td style="font-weight:bold">:</td>
+									<td align="left">--------</td>
+								</tr>
+								<tr bgcolor="#f2f2f2">
+									<td align="left" class="lf">Email</td>
+									<td style="font-weight:bold">:</td>
+									<td align="left">--------</td>
+								</tr>
+								<tr>
+									<td align="left" class="lf">Mobile Number</td>
+									<td style="font-weight:bold">:</td>
+									<td align="left">--------</td>
+								</tr>`;
 	</script>
 </body>
 
