@@ -13,12 +13,12 @@
 	<script src="js/bootstrap.min.js"></script>
 	<script src="jquery.min.js"></script>
 	<script>
-		$(document).ready(function() {
-			$("#getUID").load("UIDContainer.php");
-			setInterval(function() {
-				$("#getUID").load("UIDContainer.php");
-			}, 500);
-		});
+		// $(document).ready(function() {
+		// 	$("#getUID").load("UIDContainer.php");
+		// 	setInterval(function() {
+		// 		$("#getUID").load("UIDContainer.php");
+		// 	}, 500);
+		// });
 	</script>
 	<style>
 		html {
@@ -208,27 +208,43 @@
 		read data to tables with interavls
 		create flags to kill intervals
 		*/
+		var merchantFound = false;
+		var customerFound = false;
+		var merchantID = "";
+		var customerID = "";
 
 
-		var myVar = setInterval(myTimer, 1000);
-		var myVar1 = setInterval(myTimer1, 1000);
+		var myVar = setInterval(timerNewID, 1000);
+		var myVar1 = setInterval(timerUpdatedID, 1000);
 		var oldID = "";
 		clearInterval(myVar1);
 
-		function myTimer() {
-			var getID = document.getElementById("getUID").innerHTML;
-			oldID = getID;
-			if (getID != "") {
-				myVar1 = setInterval(myTimer1, 500);
-				showUser(getID);
+		function timerNewID() {
+			// var getID = document.getElementById("getUID").innerHTML;
+			// oldID = getID;
+			
+			if (merchantFound&&customerFound) {
+				myVar1 = setInterval(timerUpdatedID, 500);
+				// showUser(getID);
+				showCustomer(merchantID);
+				showMerchant(customerID);
+
+
 				clearInterval(myVar);
+			}else{
+				if(!merchantFound){
+					fetch()
+				}
+				if(!customerFound){
+
+				}
 			}
 		}
 
-		function myTimer1() {
+		function timerUpdatedID() {
 			var getID = document.getElementById("getUID").innerHTML;
 			if (oldID != getID) {
-				myVar = setInterval(myTimer, 500);
+				myVar = setInterval(timerNewID, 500);
 				clearInterval(myVar1);
 			}
 		}
@@ -254,15 +270,13 @@
 				xmlhttp.send();
 			}
 		}
-		function showCustomer(){
-			let id = "39EAB06D";
+		function showCustomer(id){
 			let link = "readtag.php?id=" + id ;
 			fetch(link).then((res)=>res.text()).then((data)=>{
 				document.querySelector("#customer_table").innerHTML = data;
 			})
 		}
-		function showMerchant(){
-			let id = "39EAB06D";
+		function showMerchant(id){
 			let link = "readtag.php?id=" + id ;
 			fetch(link).then((res)=>res.text()).then((data)=>{
 				document.querySelector("#merchant_table").innerHTML = data;
