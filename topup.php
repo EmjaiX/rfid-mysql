@@ -240,8 +240,9 @@
 
 					clearInterval(myVar);
 				} else {
+					// fetch("topUPID.php")
+
 					if (!merchantFound) {
-						fetch()
 					}
 					if (!customerFound) {
 
