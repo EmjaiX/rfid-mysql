@@ -202,6 +202,7 @@
 		<button onclick="return clearAll()">Clear All</button>
 	</div>
 	<script>
+		var storeID = localStorage.getItem('storeID');
 		/*
 		^modify tables
 		create funciton to update each table
@@ -222,21 +223,29 @@
 		function timerNewID() {
 			// var getID = document.getElementById("getUID").innerHTML;
 			// oldID = getID;
-			
-			if (merchantFound&&customerFound) {
-				myVar1 = setInterval(timerUpdatedID, 500);
-				// showUser(getID);
-				showCustomer(merchantID);
-				showMerchant(customerID);
+			if (storeID == "" || storeID == null) {
+				storeID = window.prompt("Enter store ID.")
+				localStorage.setItem("storeID", storeID);
+			} else {
+				fetch("./functions/topupid.php?store=" + localStorage.getItem('storeID')).then((res) => res.json()).then((data) => {
+					merchantID = data["id1"]
+				})
+				if (merchantFound && customerFound) {
+					myVar1 = setInterval(timerUpdatedID, 500);
+					// showUser(getID);
+
+					showCustomer(customerID);
+					showMerchant(merchantID);
 
 
-				clearInterval(myVar);
-			}else{
-				if(!merchantFound){
-					fetch()
-				}
-				if(!customerFound){
+					clearInterval(myVar);
+				} else {
+					if (!merchantFound) {
+						fetch()
+					}
+					if (!customerFound) {
 
+					}
 				}
 			}
 		}
@@ -270,30 +279,36 @@
 				xmlhttp.send();
 			}
 		}
-		function showCustomer(id){
-			let link = "readtag.php?id=" + id ;
-			fetch(link).then((res)=>res.text()).then((data)=>{
+
+		function showCustomer(id) {
+			let link = "readtag.php?id=" + id;
+			fetch(link).then((res) => res.text()).then((data) => {
 				document.querySelector("#customer_table").innerHTML = data;
-			})
+			});
+			customerFound = true;
 		}
-		function showMerchant(id){
-			let link = "readtag.php?id=" + id ;
-			fetch(link).then((res)=>res.text()).then((data)=>{
+
+		function showMerchant(id) {
+			let link = "readtag.php?id=" + id;
+			fetch(link).then((res) => res.text()).then((data) => {
 				document.querySelector("#merchant_table").innerHTML = data;
-			})
+			});
+			merchantFound = true;
 		}
 		var blink = document.getElementById('blink');
 		setInterval(function() {
 			blink.style.opacity = (blink.style.opacity == 0 ? 1 : 0);
 		}, 750);
 
-		function clearCustomer(){
+		function clearCustomer() {
 			document.querySelector("#customer_table").innerHTML = defaultTable;
 		}
-		function clearMerchant(){
+
+		function clearMerchant() {
 			document.querySelector("#merchant_table").innerHTML = defaultTable;
 		}
-		function clearAll(){
+
+		function clearAll() {
 			clearCustomer();
 			clearMerchant();
 		}
