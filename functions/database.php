@@ -37,7 +37,7 @@ class Database
 		$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 		$q = $pdo->prepare($sql);
 		$q->execute();
-		$data = $q->fetch(PDO::FETCH_ASSOC);
+		$data = $q->fetchAll();
 		Database::disconnect();
 		return $data;
 	}
