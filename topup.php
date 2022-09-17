@@ -221,32 +221,16 @@
 		clearInterval(myVar1);
 
 		function timerNewID() {
-			// var getID = document.getElementById("getUID").innerHTML;
-			// oldID = getID;
 			if (storeID == "" || storeID == null) {
 				storeID = window.prompt("Enter store ID.")
 				localStorage.setItem("storeID", storeID);
 			} else {
-				fetch("./functions/topupid.php?store=" + localStorage.getItem('storeID')).then((res) => res.json()).then((data) => {
-					merchantID = data["id1"]
-				})
 				if (merchantFound && customerFound) {
 					myVar1 = setInterval(timerUpdatedID, 500);
-					// showUser(getID);
-
-					showCustomer(customerID);
-					showMerchant(merchantID);
-
-
 					clearInterval(myVar);
 				} else {
-					// fetch("topUPID.php")
-
-					if (!merchantFound) {
-					}
-					if (!customerFound) {
-
-					}
+					getcustomerID();
+					getmerchantID();
 				}
 			}
 		}
@@ -259,25 +243,25 @@
 			}
 		}
 
-		function showUser(str) {
-			if (str == "") {
-				document.getElementById("show_user_data").innerHTML = "";
-				return;
-			} else {
-				if (window.XMLHttpRequest) {
-					// code for IE7+, Firefox, Chrome, Opera, Safari
-					xmlhttp = new XMLHttpRequest();
-				} else {
-					// code for IE6, IE5
-					xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-				}
-				xmlhttp.onreadystatechange = function() {
-					if (this.readyState == 4 && this.status == 200) {
-						document.getElementById("show_user_data").innerHTML = this.responseText;
+		function getcustomerID() {
+			if (!customerFound) {
+				fetch("./functions/topupid.php?store=" + localStorage.getItem('storeID')).then((res) => res.json()).then((data) => {
+					if (data["id2"] != "" || data["id2"] != null) {
+						customerID = data["id2"];
+						showCustomer(customerID);
 					}
-				};
-				xmlhttp.open("GET", "read tag user data.php?id=" + str, true);
-				xmlhttp.send();
+				})
+			}
+		}
+
+		function getmerchantID() {
+			if (!merchantFound) {
+				fetch("./functions/topupid.php?store=" + localStorage.getItem('storeID')).then((res) => res.json()).then((data) => {
+					if (data["id1"] != "" || data["id1"] != null) {
+						merchantID = data["id1"];
+						showMerchant(merchantID);
+					}
+				})
 			}
 		}
 
@@ -294,7 +278,6 @@
 			fetch(link).then((res) => res.text()).then((data) => {
 				document.querySelector("#merchant_table").innerHTML = data;
 			});
-			merchantFound = true;
 		}
 		var blink = document.getElementById('blink');
 		setInterval(function() {
@@ -303,10 +286,12 @@
 
 		function clearCustomer() {
 			document.querySelector("#customer_table").innerHTML = defaultTable;
+			customerFound = false;
 		}
 
 		function clearMerchant() {
 			document.querySelector("#merchant_table").innerHTML = defaultTable;
+			merchantFound = false;
 		}
 
 		function clearAll() {
